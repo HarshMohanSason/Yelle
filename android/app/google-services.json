@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "528535337077",
+    "project_id": "yelle-bb06c",
+    "storage_bucket": "yelle-bb06c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528535337077:android:95d318c8da442770dca03c",
+        "android_client_info": {
+          "package_name": "com.Studio385.Yell"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuIkvVdCIDrKlRwSmkXRTXZq_IeFpg0G8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:528535337077:android:27796110cfb2656edca03c",
+        "android_client_info": {
+          "package_name": "com.Studio385.Yelle"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAuIkvVdCIDrKlRwSmkXRTXZq_IeFpg0G8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
