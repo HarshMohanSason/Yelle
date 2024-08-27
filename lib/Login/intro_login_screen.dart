@@ -1,77 +1,254 @@
 
-
 import 'package:flutter/material.dart';
-import 'package:yelle/Login/phone_text_form.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
+import 'package:yelle/Login/email_login_service.dart';
+import 'package:yelle/Login/forgot_passowrd_ui.dart';
+import 'package:yelle/Login/login_state_class.dart';
+import 'package:yelle/ReusableWidgets/custom_text_forms.dart';
+import 'package:yelle/ReusableWidgets/sign_up_page_image_background.dart';
+import 'package:yelle/ReusableWidgets/sign_up_page_image_text.dart';
+import 'package:yelle/ReusableWidgets/text_form_validator.dart';
 import 'package:yelle/main.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+import '../ReusableWidgets/gradient_button.dart';
+import '../home_screen.dart';
 
-class IntroLoginScreen extends StatefulWidget{
+
+class IntroLoginScreen extends StatefulWidget {
   const IntroLoginScreen({super.key});
 
   @override
   IntroLoginScreenState createState() => IntroLoginScreenState();
-
 }
+class IntroLoginScreenState extends State<IntroLoginScreen> {
 
-class IntroLoginScreenState extends State<IntroLoginScreen>{
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  late EmailLoginService emailLoginServiceProvider;
+  final _signUpFormKey = GlobalKey<FormState>();
+
+  @override
+  void dispose()
+  {
+    emailController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void didChangeDependencies()
+  {
+    super.didChangeDependencies();
+    emailLoginServiceProvider = context.watch<EmailLoginService>();
+  }
+
   @override
   Widget build(BuildContext context) {
 
-    return Scaffold(
-      backgroundColor: colorTheme,
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 100),
-              child: Text("Yelle", style: TextStyle(
-                fontSize: 70,
-              ),),
-            ),
-            const Spacer(),
-            Padding(
-               padding: const EdgeInsets.only(bottom: 50),
-                child: continueWithPhoneButton())
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget continueWithPhoneButton() {
-    return ElevatedButton(
-      onPressed: () {
-
-        Navigator.push(context, MaterialPageRoute(builder: (context) =>  PhoneTextForm()));
-      },
-      style: ElevatedButton.styleFrom(
-        foregroundColor: Colors.black,
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
         backgroundColor: Colors.white,
-        // Text color
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        elevation: 8,
-        // This adds a shadow
-        shadowColor: Colors.black.withOpacity(0.5),
-        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 16),
-      ),
-      child: SizedBox(
-        width: screenWidth - 200,
-        child: const Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        body: Stack(
           children: [
-            Padding(
-              padding: EdgeInsets.only(right: 8.0),
-              child: Icon(Icons.phone),
-            ),
-            Text(
-              'Continue with Phone',
-              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+            const SignUpPageImageBackground(),
+            const SignUpPageImageText(mainHeading: "Welcome Back!", subHeading: "Please fill below details to continue."),
+            Positioned.fill(
+              top: screenHeight / 5, // Adjust this based on image height
+              child: Container(
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.vertical(
+                    top: Radius.circular(20),
+                  ),
+                ),
+                child: Padding(
+                  padding:  const EdgeInsets.only(left: 20.0, top: 40),
+                  child: SingleChildScrollView(
+                    child: Form(
+                      key: _signUpFormKey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Email Address",
+                            style: TextStyle(
+                                fontFamily: 'Plus_Jakarta_Sans',
+                                fontSize: screenWidth / 28.17,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const  SizedBox(height: 10),
+                          SizedBox(
+                            width: screenWidth - 40,
+                            child:  CustomTextForms(
+                              controller: emailController,
+                              hideText: false,
+                              hintText: 'Enter email address',
+                              icon: Icons.email,
+                              validator: TextFormValidator.validateEmail,
+                            )
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            "Password",
+                            style: TextStyle(
+                                fontFamily: 'Plus_Jakarta_Sans',
+                                fontSize: screenWidth / 28.17,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 10,),
+                          SizedBox(
+                            width: screenWidth - 40,
+                           child:  CustomTextForms(
+                             controller: passwordController,
+                             hideText: true,
+                             hintText: 'Enter password',
+                             icon: Icons.lock,
+                             validator: TextFormValidator.validatePassword,
+                           ),
+                          ),
+                          const SizedBox(height: 50),
+                          InkWell(
+                            onTap: () async
+                              {
+                                if(_signUpFormKey.currentState!.validate())
+                                  {setState(() {});
+                                   await emailLoginServiceProvider.startEmailLoginProcess(emailController.text, passwordController.text);
+
+                                   if (emailLoginServiceProvider.state.state == LoginStateEnum.loggedIn
+                                       && context.mounted) {
+                                     Navigator.push(context,
+                                         MaterialPageRoute(builder: (
+                                             context) => const HomeScreen()));
+                                   }
+                                   else if(emailLoginServiceProvider.state.state == LoginStateEnum.error)
+                                     {
+                                       setState(() {
+                                         Fluttertoast.showToast(
+                                           msg: emailLoginServiceProvider.state.errorMessage!,
+                                           toastLength: Toast.LENGTH_LONG,
+                                           gravity: ToastGravity.CENTER,
+                                           textColor: Colors.white,
+                                           backgroundColor: Colors.red,
+                                           fontSize: 14.0,
+                                         );
+                                       });
+                                     }
+                                  }
+                              },
+                                child: emailLoginServiceProvider.state.state == LoginStateEnum.loading ? const Center(child: CircularProgressIndicator(strokeWidth: 7, color: Colors.black,)) : const Center(child: GradientButton(text: 'Login',))),
+                          const SizedBox(height: 50),
+                          Center(
+                            child: InkWell(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> const ForgotPassowrdUi()));
+                              },
+                              child: Text(
+                                "Forgot Password?",
+                                style: TextStyle(
+                                    fontFamily: 'Plus_Jakarta_Sans',
+                                    fontSize: screenWidth / 24.17,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 50),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                                  child: const Divider(
+                                    color: Colors.grey,
+                                    thickness: 1.0,
+                                  ),
+                                ),
+                              ),
+                              const Text('OR', style: TextStyle(
+                                color: Colors.grey
+                              ),),
+                              Expanded(
+                                child: Container(
+                                  margin: const EdgeInsets.only(left: 10.0, right: 10.0),
+                                  child: const Divider(
+                                    color: Colors.grey,
+                                    thickness: 1.0,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 30),
+                          Center(
+                            child: SignInButton(
+                              Buttons.Google,
+                              onPressed: () {
+                               // Navigator.push(context, MaterialPageRoute(builder: (context)=> const ResetPassword()));
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          Center(
+                            child: SignInButton(
+                              Buttons.AppleDark,
+                              onPressed: () {
+                              // Navigator.push(context, MaterialPageRoute(builder: (context)=> const OtpVerificationForm(emailAddress: "harshsason2000@gmail.com")));
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 40),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Don't have an account?",
+                                style: TextStyle(
+                                    fontFamily: 'Plus_Jakarta_Sans',
+                                    fontSize: screenWidth / 28.17,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              ShaderMask( shaderCallback: (bounds) => const LinearGradient(
+                                colors: [
+                                  Color(0xFFFE9900),  // Start color
+                                  Color(0xFFFFBE00),  // End color
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ).createShader(bounds),
+                                child: InkWell(
+                                  onTap: ()
+                                  {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    "Sign Up",
+                                    style: TextStyle(
+                                      fontFamily: 'Plus_Jakarta_Sans',
+                                      fontSize: screenWidth / 28.17,
+                                      color: Colors.white, // This color will be replaced by the gradient
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),)
+                            ]
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         ),
       ),
     );
   }
+
 }

@@ -1,25 +1,31 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:yelle/main.dart';
 
 class HomeScreen extends StatefulWidget{
   const HomeScreen({super.key});
 
   @override
-
   HomeScreenState createState()=> HomeScreenState();
-
-
 }
 
 class HomeScreenState extends State<HomeScreen>{
   @override
   Widget build(BuildContext context) {
-    return const PopScope(
+
+    return  PopScope(
       canPop: false,
       child:  Scaffold(
-        backgroundColor: colorTheme,
+        body: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(colors:  [
+             Color(0xFFFE9900),  // Start color
+             Color(0xFFFFBE00),
+// End color
+            ],
+          begin: Alignment.bottomCenter,
+          end: Alignment.topCenter,
+          )
+          ),
+        ),
       ),
     );
   }
