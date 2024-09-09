@@ -83,7 +83,7 @@ class _ServiceTypeState extends State<ServiceType> {
                   backgroundColor: Colors.red,
                   fontSize: 14.0,
                 );
-                return Container();
+                return const Center(child: Text("No data available right now"));
               }
               else if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
