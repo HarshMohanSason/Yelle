@@ -41,6 +41,13 @@ dependencies:
   flutter_signin_button: ^2.0.0
   tuple: ^2.0.2
   fluttertoast: ^8.2.8
+  google_sign_in: ^6.2.1
+  shared_preferences: ^2.3.2
+  sign_in_with_apple: ^6.1.2
+  flutter_search_bar: ^3.0.0
+  cached_network_image: ^3.4.0
+  sqflite_common_ffi: ^2.3.3
+  page_view_indicators: ^2.0.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -73,6 +80,28 @@ flutter:
   assets:
     - assets/images/YelleBackground.png
     - assets/images/YelleColorTheme.png
+    - assets/images/Lotus.png
+    - assets/images/Carpenter.png
+    - assets/images/Brush.png
+    - assets/images/Construction.png
+    - assets/images/happy_lady_with_flowers.png
+    - assets/images/lady_with_flowers_smelling.png
+    - assets/images/pretty_lady.png
+    - assets/images/direction.png
+    - assets/images/siren.png
+    - assets/images/door.png
+    - assets/images/persons.png
+    - assets/images/Carpainter.png
+    - assets/images/Painter.png
+    - assets/images/chatBubble.png
+    - assets/images/BeautyService.png
+    - assets/images/Civil.png
+    - assets/images/DriverService.png
+    - assets/images/MaidService.png
+    - assets/images/TileService.png
+    - assets/images/tintedGradient.png
+    - assets/images/Ellipse16.png
+    - assets/images/serviceGradientSquare.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -95,7 +124,7 @@ flutter:
     - family: Plus_Jakarta_Sans
       fonts:
         - asset: assets/fonts/Plus_Jakarta_Sans/static/PlusJakartaSans-Regular.ttf
-        - asset: assets/fonts/Plus_Jakarta_Sans/static/PlusJakartaSans-Bold.ttf
+        - asset: assets/fonts/Plus_Jakarta_Sans/static/PlusJakartaSans-ExtraBold.ttf
 
   #       - asset: fonts/TrajanPro_Bold.ttf
   #         weight: 700

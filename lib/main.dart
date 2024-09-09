@@ -1,12 +1,13 @@
-
 import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:yelle/Login/email_login_service.dart';
+import 'package:yelle/Login/EmailLogin/email_login_service.dart';
+import 'package:yelle/Login/GoogleLogin/google_login_service.dart';
 import 'package:yelle/Login/intro_login_screen.dart';
-import 'package:yelle/Login/password_reset_service.dart';
-import 'package:yelle/Login/sign_up_service.dart';
+import 'package:yelle/Login/EmailLogin/password_reset_service.dart';
+import 'Login/EmailSignUp/sign_up_service.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart' as sqflite_ffi;
 
 const colorTheme = Color(0xFFFFBF00);
 
@@ -18,6 +19,7 @@ final screenHeight = screenSize.height;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  sqflite_ffi.sqfliteFfiInit();
   runApp(const MyApp());
 }
 
@@ -32,6 +34,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: ((context)=> SignUpService())),
         ChangeNotifierProvider(create: ((context)=> EmailLoginService())),
         ChangeNotifierProvider(create: ((context)=> PasswordResetService())),
+        ChangeNotifierProvider(create: ((context)=> GoogleSignInProvider())),
       ],
       child: MaterialApp(
         title: "Yelle",

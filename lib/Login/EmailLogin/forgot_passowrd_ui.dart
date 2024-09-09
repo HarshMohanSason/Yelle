@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:yelle/Login/password_reset_service.dart';
+import 'package:yelle/Login/EmailLogin/password_reset_service.dart';
 import 'package:yelle/ReusableWidgets/gradient_button.dart';
 import 'package:yelle/ReusableWidgets/sign_up_page_image_background.dart';
 import 'package:yelle/ReusableWidgets/sign_up_page_image_text.dart';
-import '../ReusableWidgets/custom_text_forms.dart';
-import '../ReusableWidgets/text_form_validator.dart';
-import '../main.dart';
+import '../../ReusableWidgets/custom_text_forms.dart';
+import '../../ReusableWidgets/text_form_validator.dart';
+import '../../main.dart';
 
 class ForgotPassowrdUi extends StatefulWidget {
   const ForgotPassowrdUi({super.key});

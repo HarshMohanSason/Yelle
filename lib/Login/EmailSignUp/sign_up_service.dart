@@ -23,6 +23,8 @@ class SignUpService extends ChangeNotifier{
         'firstName': firstName,
         'lastName': lastName,
         'emailAddress': emailAddress,
+        'provider': 'Email',
+        'uid': userCredential.user!.uid
       };
       //upload the user information to firebase
       await FirebaseFirestore.instance.collection('usersInfo').doc(userCredential.user!.uid).set(userData);

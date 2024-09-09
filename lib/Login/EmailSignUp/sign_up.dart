@@ -4,16 +4,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:yelle/Login/EmailSignUp/sign_up_service.dart';
 import 'package:yelle/Login/intro_login_screen.dart';
 import 'package:yelle/Login/login_state_class.dart';
-import 'package:yelle/Login/sign_up_service.dart';
 import 'package:yelle/ReusableWidgets/custom_text_forms.dart';
 import 'package:yelle/ReusableWidgets/gradient_button.dart';
 import 'package:yelle/ReusableWidgets/text_form_validator.dart';
 import 'package:yelle/home_screen.dart';
-import '../ReusableWidgets/sign_up_page_image_background.dart';
-import '../ReusableWidgets/sign_up_page_image_text.dart';
-import '../main.dart';
+import '../../ReusableWidgets/sign_up_page_image_background.dart';
+import '../../ReusableWidgets/sign_up_page_image_text.dart';
+import '../../main.dart';
 
 class SignUp extends StatefulWidget{
   const SignUp({super.key});
