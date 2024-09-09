@@ -83,16 +83,28 @@ class _ServiceTypeState extends State<ServiceType> {
                   backgroundColor: Colors.red,
                   fontSize: 14.0,
                 );
-                return const Center(child: Text("No data available right now"));
+                return Center(child: Text(snapshot.error.toString(), style: TextStyle(
+                    fontFamily: 'Plus_Jakarta_Sans',
+                    color: Colors.red,
+                    fontWeight: FontWeight.bold,
+                    fontSize: screenWidth / 18),));
               }
               else if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(
                   child: CircularProgressIndicator(
-                    strokeWidth: 8,
+                    strokeWidth: 7,
                     color: Colors.black,
                   ),
                 );
               }
+              else if(snapshot.data.length == 0)
+                {
+                  return Center(child: Text("No one available for this occupation", style: TextStyle(
+                      fontFamily: 'Plus_Jakarta_Sans',
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                      fontSize: screenWidth / 25),));
+                }
               else {
 
                 return Column(

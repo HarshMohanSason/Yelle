@@ -1,4 +1,5 @@
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:yelle/Services/service_provider_information.dart';
 import 'package:yelle/main.dart';
@@ -30,7 +31,7 @@ class ServiceTypeDisplay extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12)
                   ),
-                  child: Image.network(serviceProviderInformation.imageUrl, fit: BoxFit.contain,)
+                  child: CachedNetworkImage(imageUrl: serviceProviderInformation.imageUrl, fit: BoxFit.contain,)
                 ),
               ),
               const SizedBox(width: 10),
@@ -44,6 +45,46 @@ class ServiceTypeDisplay extends StatelessWidget {
                   Text("Exp: ${serviceProviderInformation.experience} Years")
                 ],
               ),
+
+              Padding(
+                padding: EdgeInsets.only(bottom: screenWidth/7.2),
+                child: Container(
+                  width: screenWidth/7.8,
+                  height: screenHeight/37.8,
+                    decoration: BoxDecoration(
+                        color: const Color(0xFFFFF8E6),
+                        borderRadius: BorderRadius.circular(5),
+                    ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 5.0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                          Text(serviceProviderInformation.currentRating.toString()),
+                       const SizedBox(width: 2,),
+                        ShaderMask(
+                          shaderCallback: (Rect bounds) {
+                            return const LinearGradient(
+                              colors: [
+                                Color(0xFFFE9900), // Start color
+                                Color(0xFFFFBE00),], // Define your gradient colors here
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ).createShader(bounds);
+                          },
+                          child: Icon(
+                            Icons.star,
+                            size: screenWidth / 23, // Use your desired size
+                            color: Colors.white, // This color acts as the mask
+                          ),
+                        )
+                      ],
+                    ),
+
+                  ),
+                ),
+              )
 
             ],
           ),

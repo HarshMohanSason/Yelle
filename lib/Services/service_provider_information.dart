@@ -10,8 +10,10 @@ class ServiceProviderInformation {
   final int experience;
   final String location;
   final String serviceProviderDocID;
+  final List<double> ratings = [5];
+  final double currentRating;
 
-  ServiceProviderInformation(this.imageUrl, this.name, this.occupation, this.experience, this.location, this.serviceProviderDocID);
+  ServiceProviderInformation(this.imageUrl, this.name, this.occupation, this.experience, this.location, this.serviceProviderDocID, rating, this.currentRating);
 
 
   static Future<List<ServiceProviderInformation>> getServiceProviderInformation(String occupation) async
@@ -24,15 +26,15 @@ class ServiceProviderInformation {
           .where('Occupation', isEqualTo: occupation)
           .get();
 
-     for(var eachDoc in snapshot.docs)
+     for(var currentDoc in snapshot.docs)
        {
-         ServiceProviderInformation obj = ServiceProviderInformation(eachDoc['imageUrl'], eachDoc['Name'], eachDoc['Occupation'], eachDoc['Experience'], eachDoc['Location'],eachDoc.id);
+         ServiceProviderInformation obj = ServiceProviderInformation(currentDoc['imageUrl'], currentDoc['Name'], currentDoc['Occupation'], currentDoc['Experience'], currentDoc['Location'],currentDoc.id, currentDoc['Ratings'], currentDoc['currentRating'].toDouble());
          serviceProviderInformation.add(obj);
        }
     }
     catch(e)
     {
-     // print(e);
+      //print(e)
     }
     return serviceProviderInformation;
   }
@@ -52,14 +54,22 @@ class ServiceProviderInformation {
 
   Map<String, dynamic> toMap(ServiceProviderInformation obj)
   {
-
+    double currentRating = calculateRating(obj.ratings);
     return {
       'imageUrl': obj.imageUrl,
       'Name': obj.name,
       'Occupation': obj.occupation,
       'Experience': obj.experience,
       'serviceProviderDocID': obj.serviceProviderDocID,
-      'Location': obj.location
+      'Location': obj.location,
+      'Ratings': obj.ratings,
+      'currentRating': currentRating
     };
+  }
+
+  double calculateRating(List<double> ratings)
+  {
+     double sum = ratings.reduce((a, b) => a + b);
+     return sum/ratings.length;
   }
 }
