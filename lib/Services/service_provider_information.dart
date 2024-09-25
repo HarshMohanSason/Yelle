@@ -12,8 +12,9 @@ class ServiceProviderInformation {
   final String serviceProviderDocID;
   final List<double> ratings = [5];
   final double currentRating;
+  final String uid;
 
-  ServiceProviderInformation(this.imageUrl, this.name, this.occupation, this.experience, this.location, this.serviceProviderDocID, rating, this.currentRating);
+  ServiceProviderInformation(this.imageUrl, this.name, this.occupation, this.experience, this.location, this.serviceProviderDocID, rating, this.currentRating, this.uid);
 
 
   static Future<List<ServiceProviderInformation>> getServiceProviderInformation(String occupation) async
@@ -28,7 +29,7 @@ class ServiceProviderInformation {
 
      for(var currentDoc in snapshot.docs)
        {
-         ServiceProviderInformation obj = ServiceProviderInformation(currentDoc['imageUrl'], currentDoc['Name'], currentDoc['Occupation'], currentDoc['Experience'], currentDoc['Location'],currentDoc.id, currentDoc['Ratings'], currentDoc['currentRating'].toDouble());
+         ServiceProviderInformation obj = ServiceProviderInformation(currentDoc['imageUrl'], currentDoc['Name'], currentDoc['Occupation'], currentDoc['Experience'], currentDoc['Location'],currentDoc.id, currentDoc['Ratings'], currentDoc['currentRating'].toDouble(), currentDoc['uid']);
          serviceProviderInformation.add(obj);
        }
     }

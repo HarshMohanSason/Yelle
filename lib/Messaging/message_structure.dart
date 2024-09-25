@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:intl/intl.dart';
 
-class MessageStructure extends ChangeNotifier{
+class MessageStructure  {
   final String messageID;
   final String senderID;
   final String receiverID;
@@ -17,8 +17,7 @@ class MessageStructure extends ChangeNotifier{
   MessageStructure(this.messageID, this.senderID, this.receiverID,
       this.timestamp, this.isSent, this.isRead, this.images, this.message);
 
-  Future sendMessage(
-      String messageReceiverID, MessageStructure messageObject) async {
+  static Future sendMessage(MessageStructure messageObject) async {
     try {
       //send the message to the sender's sentMessages collection
       await FirebaseFirestore.instance
@@ -26,48 +25,59 @@ class MessageStructure extends ChangeNotifier{
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('sentMessages')
           .doc()
-          .update(messageObject.toMap(messageObject));
+          .set(messageObject.toMap(messageObject));
 
       //send the message also to the receiver's receivedMessages collection
       await FirebaseFirestore.instance
           .collection('usersInfo')
-          .doc(messageReceiverID)
+          .doc(messageObject.receiverID)
           .collection('receivedMessages')
           .doc()
-          .update(messageObject.toMap(messageObject));
+          .set(messageObject.toMap(messageObject));
     } on SocketException {
       //
     } catch (e) {
-      //
+      rethrow;
     }
   }
 
-  Stream getMessages(String otherUserID) {
-
-    try{
+  static Stream<List<MessageStructure>> getMessages(String otherUserID) {
+    try {
       //get the sentMessages from our sentMessages collection of sentMessages where the receiverID matches with the current user who we are chatting with
-      var sentMessagesSnapshot = FirebaseFirestore.instance.collection(
-          'usersInfo').doc(FirebaseAuth.instance.currentUser!.uid).collection(
-          'sentMessages').where(
-          'receiverID', isEqualTo: otherUserID).snapshots();
+      var sentMessagesStream = FirebaseFirestore.instance
+          .collection('usersInfo')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('sentMessages')
+          .where('ReceiverID', isEqualTo: otherUserID).orderBy('TimeStamp', descending: true)
+          .snapshots()
+          .map((snapshot) => snapshot.docs
+              .map((doc) => toMessageStructure(doc.data()))
+              .toList());
+
       //get the receivedMessages which is sent by the other user from our receivedMessages collection where the senderID is the other user sending the messages
-      var receivedMessagesSnapshot = FirebaseFirestore.instance.collection(
-          'usersInfo').doc(FirebaseAuth.instance.currentUser!.uid).collection(
-          'sentMessages').where(
-          'senderID', isEqualTo: otherUserID).snapshots();
+      var receivedMessagesStream = FirebaseFirestore.instance
+          .collection('usersInfo')
+          .doc(FirebaseAuth.instance.currentUser!.uid) // Fetch from the other user's ID
+          .collection('receivedMessages') // Corrected collection name
+          .where('SenderID', isEqualTo: otherUserID).orderBy('TimeStamp', descending: true)
+          .snapshots()
+          .map((snapshot) => snapshot.docs
+              .map((doc) => toMessageStructure(doc.data()))
+              .toList());
 
+      // Combine the two streams
+      var combinedStream =  Rx.combineLatest2(sentMessagesStream, receivedMessagesStream,
+          (List<MessageStructure> sentMessages,
+              List<MessageStructure> receivedMessages) {
+        return [...sentMessages, ...receivedMessages];
 
-      var combinedStream = Rx.combineLatest(
-          [receivedMessagesSnapshot, sentMessagesSnapshot], (
-          List<QuerySnapshot> snapshot) => snapshot);
+      });
       return combinedStream;
-    }
-    on SocketException{
+
+    } on SocketException {
       //
       rethrow;
-    }
-    catch(e)
-    {
+    } catch (e) {
       rethrow;
     }
   }
@@ -85,4 +95,46 @@ class MessageStructure extends ChangeNotifier{
       'Message': object.message,
     };
   }
+
+  static MessageStructure toMessageStructure(Map<String, dynamic> snapshot) {
+    return MessageStructure(
+        snapshot['MessageID'],
+        snapshot['SenderID'],
+        snapshot['ReceiverID'],
+        snapshot['TimeStamp'],
+        snapshot['IsSent'],
+        snapshot['IsRead'],
+        (snapshot['Images'] as List<dynamic>).cast<String>(),
+        snapshot['Message']);
+  }
+
+  static String formatTimestamp(Timestamp timestamp) {
+    DateTime dateTime = timestamp.toDate();
+    return DateFormat('hh:mm a').format(dateTime);
+  }
+
+  //Mark the messages seen once user opens that chat.
+  Future markMessageSeen(String otherUserID) async
+  {
+    try {
+     await FirebaseFirestore.instance
+          .collection('usersInfo')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('sentMessages')
+          .where('ReceiverID', isEqualTo: otherUserID)
+          .get()
+          .then((snapshot) {
+
+        for (var doc in snapshot.docs) {
+          doc.reference.update({'isRead': true});
+        }
+      });
+
+    }
+    catch (e) {
+      //print(e.toString());
+    }
+  }
+
+
 }

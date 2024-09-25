@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:yelle/Messaging/message_screen_ui.dart';
 import 'package:yelle/Services/service_provider_information.dart';
 import 'package:yelle/Services/service_type_display.dart';
 import '../ReusableWidgets/search_bar.dart';
@@ -119,7 +120,12 @@ class _ServiceTypeState extends State<ServiceType> {
                       itemCount: snapshot.data.length,
                       itemBuilder: (BuildContext context,
                           int index) {
-                        return ServiceTypeDisplay(serviceProviderInformation: snapshot.data[index]);
+                        return InkWell(
+                            onTap: ()
+                            {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => MessageScreenUi(messageReceiverName: snapshot.data[index].name, messageReceiverImage:snapshot.data[index].imageUrl, receiverID: snapshot.data[index].uid)));
+                            },
+                            child: ServiceTypeDisplay(serviceProviderInformation: snapshot.data[index]));
                       },
 
                     ),

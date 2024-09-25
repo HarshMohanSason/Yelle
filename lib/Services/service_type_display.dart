@@ -20,7 +20,6 @@ class ServiceTypeDisplay extends StatelessWidget {
           color: Colors.white, borderRadius: BorderRadius.circular(8)),
       child: Column(
         children: [
-
           Row(
             children: [
               Padding(
@@ -39,13 +38,17 @@ class ServiceTypeDisplay extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Name: ${serviceProviderInformation.name}'
+                  Text(serviceProviderInformation.name,
+                    style: const TextStyle(
+                    fontWeight: FontWeight.bold
+                  ),
                       ),
                   Text('Occupation: ${serviceProviderInformation.occupation}'),
                   Text("Exp: ${serviceProviderInformation.experience} Years")
                 ],
               ),
 
+              const SizedBox(width: 15,),
               Padding(
                 padding: EdgeInsets.only(bottom: screenWidth/7.2),
                 child: Container(
@@ -56,10 +59,9 @@ class ServiceTypeDisplay extends StatelessWidget {
                         borderRadius: BorderRadius.circular(5),
                     ),
                   child: Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
+                    padding: const EdgeInsets.only(left: 8.0, bottom:2),
                     child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                           Text(serviceProviderInformation.currentRating.toString()),
                        const SizedBox(width: 2,),
